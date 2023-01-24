@@ -73,7 +73,7 @@ class Login: # Builds logins as objects
         self.ttotal=ttotal
 
     def __str__(self):
-        return f"{self.uname} || {self.signin} || {self.signout} || {self.ttotal}"
+        return f"{self.signin} || {self.signout} || {self.ttotal} || {self.uname}"
 
 def int_input(prompt): # integer input validation
     while True:
@@ -84,7 +84,7 @@ def int_input(prompt): # integer input validation
             print("Please just type in whole numerals")
 
 def show_header():
-    print(" Name || Sign-in || Sign-out || Cumulative time in Lab\n") # Cumulative time in lab? instead of Total?
+    print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name\n") # Cumulative time in lab? instead of Total?
 
 def show_menu():
     print("\nADN Lab Sign-in \n")
@@ -143,9 +143,9 @@ def sign_in(pool,log):
     now = datetime.now().replace(microsecond=0)
     index = find_previous(log,uname)
     if index != None:
-        u1 = Login(uname,now,'-',index.ttotal+timedelta(minutes=0))
+        u1 = Login(uname,now,'         -         ',index.ttotal+timedelta(minutes=0))
     else:
-        u1 = Login(uname,now,'-',timedelta(minutes=0))
+        u1 = Login(uname,now,'         -         ',timedelta(minutes=0))
     return u1
 
 def sign_out(pool,log):
