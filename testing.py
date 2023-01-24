@@ -92,13 +92,14 @@ def show_menu():
     print("2. Sign-out")
 
 def admin_menu(log,pool):
-    options=[1,2,3,4]
+    options=[1,2,3,4,5]
     while True:
         print(f"\n ADN Lab Admin Menu\n")
         print(f"1. Show signed-in names")
         print(f"2. Show Log")
         print(f"3. Search log for name")
-        print(f"4. exit")
+        print(f"4. Show final entry for each user")
+        print(f"5. exit")
         admin_input=int_input(f"Your choice: ")
         while not admin_input in options:
             admin_input=int_input(f"Please enter a valid choice: ")
@@ -112,8 +113,10 @@ def admin_menu(log,pool):
         if admin_input == 3:
             find_name(log)
         if admin_input == 4:
-##            os.system('cls') # win specific screen clear
-            break    
+          print(F"\n    Final Entry for each Student:")
+          show_final(log)
+        if admin_input == 5:
+          break
 
 def find_previous(log,uname):
     for i in reversed(log):
@@ -133,6 +136,17 @@ def find_name(log):
         log_print(alist)
     else: print(f"\n No results found.")
 
+def show_final(log):
+  alist=[]
+  uuname=set()
+  for i in reversed(log):
+    if i.uname not in uuname:
+      uuname.add(i.uname)
+      alist.append(i)
+  show_header()
+  log_print(alist)
+      
+  
 def sign_in(pool,log):
     uname=input("Enter name to sign in: ")
     if uname in pool: # check for uname in pool of signed in names
