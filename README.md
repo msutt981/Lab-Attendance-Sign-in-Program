@@ -8,6 +8,6 @@ This is a digital sign-in sheet program for a course project.
   - moved name to the end to not need this.
 - [x] show last entry of every unique name in the log, admin menu option
 - [x] add personal pin to Login class
-- [ ] setup auto save to log.json
+- [x] setup auto save to log.json
 - [ ] make gui
 - [x] make signout check against sign-in (last instance) and verify the same pid was used

@@ -257,6 +257,7 @@ def main():
             u1 = save_object(log,"log.json") # debug to force log save in testing
         if u1 != None:
             log.append(u1)
+            save_object(log,"log.json")
         # Bellow would be output to a log file, currently displayed for prototype purposes
 ##        print("")
 ##        show_header()
