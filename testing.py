@@ -66,14 +66,15 @@ class DateTimeAwareJSONDecoder(JSONDecoder):
 
 
 class Login: # Builds logins as objects
-    def __init__(self,uname,signin,signout,ttotal):
+    def __init__(self,uname,pid,signin,signout,ttotal):
         self.uname=uname
         self.signin=signin
         self.signout=signout
         self.ttotal=ttotal
+        self.pid=pid
 
     def __str__(self):
-        return f"{self.signin} || {self.signout} || {self.ttotal} || {self.uname}"
+        return f"{self.signin} || {self.signout} || {self.ttotal} || {self.pid} || {self.uname}"
 
 def int_input(prompt): # integer input validation
     while True:
@@ -84,7 +85,7 @@ def int_input(prompt): # integer input validation
             print("Please just type in whole numerals")
 
 def show_header():
-    print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name\n") # Cumulative time in lab? instead of Total?
+    print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || PIN || Name\n") # Cumulative time in lab? instead of Total?
 
 def show_menu():
     print("\nADN Lab Sign-in \n")
@@ -92,14 +93,15 @@ def show_menu():
     print("2. Sign-out")
 
 def admin_menu(log,pool):
-    options=[1,2,3,4,5]
+    options=[1,2,3,4,5,6]
     while True:
         print(f"\n ADN Lab Admin Menu\n")
         print(f"1. Show signed-in names")
         print(f"2. Show Log")
         print(f"3. Search log for name")
         print(f"4. Show final entry for each user")
-        print(f"5. exit")
+        print(f"5. Save log to text file")
+        print(f"6. exit")
         admin_input=int_input(f"Your choice: ")
         while not admin_input in options:
             admin_input=int_input(f"Please enter a valid choice: ")
@@ -116,7 +118,9 @@ def admin_menu(log,pool):
           print(F"\n    Final Entry for each Student:")
           show_final(log)
         if admin_input == 5:
-          break
+            log_save(log, "log.txt")
+        if admin_input == 6:
+            break
 
 def find_previous(log,uname):
     for i in reversed(log):
@@ -154,12 +158,15 @@ def sign_in(pool,log):
         return
     if uname == "": # a way to drop back to the menu
         return
+    pid=input("Enter personal pin/password: ")
+    if pid == "":
+        return
     now = datetime.now().replace(microsecond=0)
     index = find_previous(log,uname)
     if index != None:
-        u1 = Login(uname,now,'         -         ',index.ttotal+timedelta(minutes=0))
+        u1 = Login(uname,pid,now,'         -         ',index.ttotal+timedelta(minutes=0))
     else:
-        u1 = Login(uname,now,'         -         ',timedelta(minutes=0))
+        u1 = Login(uname,pid,now,'         -         ',timedelta(minutes=0))
     return u1
 
 def sign_out(pool,log):
@@ -167,9 +174,10 @@ def sign_out(pool,log):
     if uname not in pool: # check if uname is NOT in pool of signed in names
         print("\n The name you entered was not signed in to a lab")
         return
+    pid = input("Enter personal pin/password: ")
     now = datetime.now().replace(microsecond=0)
     index = find_previous(log,uname)
-    u1 = Login(uname,index.signin,now,(now-index.signin)+index.ttotal)
+    u1 = Login(uname,pid,index.signin,now,(now-index.signin)+index.ttotal)
     return u1
 
 def initialize_log(filename,u0):
@@ -178,7 +186,7 @@ def initialize_log(filename,u0):
     if path.is_file():        
         interdict=load_object(filename)
         for i in interdict:
-          u1=Login(i['uname'],i['signin'],i['signout'],i['ttotal'])
+          u1=Login(i['uname'],i['pid'],i['signin'],i['signout'],i['ttotal'])
           log.append(u1)
     else:
         log=[u0]
@@ -204,9 +212,18 @@ def load_object(filename):
     except Exception as ex:
         print("Error: ", ex)
 
+def log_save(obj, filename):
+    now = datetime.now().replace(microsecond=0).strftime("%Y-%m-%d_%H.%M.%S.")
+    try:
+        with open(now+filename, "w+") as f:
+            for x in obj:
+                f.write(f"{x}\n")
+    except Exception as ex:
+        print("Error: ", ex)
+
 def main():
     options=[1,2,9987,3] #remove 3 when finished testing
-    u0=Login("Shade",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
+    u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
     #log=[u0] # running log sheet, list
     log=list((initialize_log('log.json',u0))) # initialize log list
     pool=set() # initialise the set of signed in names
