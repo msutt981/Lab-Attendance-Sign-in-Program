@@ -10,3 +10,4 @@ This is a digital sign-in sheet program for a course project.
 - [x] add personal pin to Login class
 - [ ] setup auto save to log.json
 - [ ] make gui
+- [x] make signout check against sign-in (last instance) and verify the same pid was used

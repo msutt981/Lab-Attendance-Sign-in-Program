@@ -174,9 +174,17 @@ def sign_out(pool,log):
     if uname not in pool: # check if uname is NOT in pool of signed in names
         print("\n The name you entered was not signed in to a lab")
         return
-    pid = input("Enter personal pin/password: ")
     now = datetime.now().replace(microsecond=0)
     index = find_previous(log,uname)
+    pid = str(input("Enter personal pin/password: "))
+    if pid == "":
+        print(f"Entry was blank, returning to menu")
+    if pid != index.pid:
+        print(f"Personal pin/password didn't match sign-in. Please Try again.")
+        pid = str(input("Enter personal pin/password: "))
+        if pid == "":
+            print(f"Entry was blank. Returning to main menu")
+            return
     u1 = Login(uname,pid,index.signin,now,(now-index.signin)+index.ttotal)
     return u1
 
