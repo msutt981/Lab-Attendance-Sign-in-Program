@@ -9,6 +9,7 @@ from datetime import timedelta
 import json
 from json import JSONEncoder, JSONDecoder
 from pathlib import Path
+import ast
 
 # https://gist.github.com/majgis/4200488
 #Taken from http://taketwoprogramming.blogspot.com/2009/06/subclassing-jsonencoder-and-jsondecoder.html
@@ -228,12 +229,27 @@ def log_save(obj, filename):
     except Exception as ex:
         print("Error: ", ex)
 
+def pool_save(obj,filename):
+    try:
+        with open(filename, "w") as f:
+            f.write(str(obj))
+    except Exception as ex:
+        print("Error: ", ex)
+
+def pool_load(filename):
+    try:
+        with open(filename) as f:
+            ser = f.read()
+            return set() if ser == str(set()) else ast.literal_eval(ser)
+    except Exception as ex:
+        return set()
+
 def main():
     options=[1,2,9987]
     u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
     #log=[u0] # running log sheet, list
     log=list((initialize_log('log.json',u0))) # initialize log list
-    pool=set() # initialise the set of signed in names
+    pool=set(pool_load("pool.json")) # initialise the set of signed in names
     while True:
         show_menu()
         user_input=int_input("Your choice: ")
@@ -243,11 +259,13 @@ def main():
             u1 = sign_in(pool,log)
             if u1 != None:
                 pool.add(u1.uname)
+                pool_save(pool,"pool.json")
                 print(f"\n{u1.uname} has signed in at {u1.signin}.")
         if user_input == 2:
             u1 = sign_out(pool,log)
             if u1 != None:
                 pool.remove(u1.uname)
+                pool_save(pool,"pool.json")
                 print(f"\n{u1.uname} has signed out at {u1.signout}. Session time was {u1.signout - u1.signin}. Have a nice day.")
         if user_input == 9987:
             u1 = admin_menu(log,pool)
