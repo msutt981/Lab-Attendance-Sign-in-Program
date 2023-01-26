@@ -9,7 +9,6 @@ from datetime import timedelta
 import json
 from json import JSONEncoder, JSONDecoder
 from pathlib import Path
-#import os
 
 # https://gist.github.com/majgis/4200488
 #Taken from http://taketwoprogramming.blogspot.com/2009/06/subclassing-jsonencoder-and-jsondecoder.html
@@ -230,7 +229,7 @@ def log_save(obj, filename):
         print("Error: ", ex)
 
 def main():
-    options=[1,2,9987,3] #remove 3 when finished testing
+    options=[1,2,9987]
     u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
     #log=[u0] # running log sheet, list
     log=list((initialize_log('log.json',u0))) # initialize log list
@@ -251,16 +250,9 @@ def main():
                 pool.remove(u1.uname)
                 print(f"\n{u1.uname} has signed out at {u1.signout}. Session time was {u1.signout - u1.signin}. Have a nice day.")
         if user_input == 9987:
-##            os.system('cls') # win specific screen clear
             u1 = admin_menu(log,pool)
-        if user_input == 3:
-            u1 = save_object(log,"log.json") # debug to force log save in testing
         if u1 != None:
             log.append(u1)
             save_object(log,"log.json")
-        # Bellow would be output to a log file, currently displayed for prototype purposes
-##        print("")
-##        show_header()
-##        log_print(log)
 
 main()
