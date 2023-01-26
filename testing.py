@@ -242,12 +242,12 @@ def pool_load(filename):
             ser = f.read()
             return set() if ser == str(set()) else ast.literal_eval(ser)
     except Exception as ex:
+        print("No file of signed-in names found. Loading an empty list")
         return set()
 
 def main():
     options=[1,2,9987]
     u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
-    #log=[u0] # running log sheet, list
     log=list((initialize_log('log.json',u0))) # initialize log list
     pool=set(pool_load("pool.json")) # initialise the set of signed in names
     while True:
