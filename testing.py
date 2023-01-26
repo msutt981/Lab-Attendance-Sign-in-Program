@@ -74,7 +74,7 @@ class Login: # Builds logins as objects
         self.pid=pid
 
     def __str__(self):
-        return f"{self.signin} || {self.signout} || {self.ttotal} || {self.pid} || {self.uname}"
+        return f"{self.signin} || {self.signout} || {self.ttotal} || {self.uname} || {self.pid}"
 
 def int_input(prompt): # integer input validation
     while True:
@@ -85,7 +85,7 @@ def int_input(prompt): # integer input validation
             print("Please just type in whole numerals")
 
 def show_header():
-    print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || PIN || Name\n") # Cumulative time in lab? instead of Total?
+    print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n") # Cumulative time in lab? instead of Total?
 
 def show_menu():
     print("\nADN Lab Sign-in \n")
