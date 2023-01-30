@@ -177,12 +177,13 @@ def clear_entry():
     pido.delete(0, tk.END)
     monitor.delete('1.0', tk.END) # may end up moving this out
 
-def signin_menu():
-    display('signin_menu')
-    clear_entry()
+def goto_signin(app):
+    #display('signin_menu')
+    app.show_signinmenu()
+    #clear_entry()
     siname.focus()
 
-def signout_menu():
+def goto_signout():
     display('signout_menu')
     clear_entry()
     soname.focus()
@@ -218,107 +219,228 @@ def admin_check(pwd, msg_label, top,):
         msg_label.config(text="Error: retry password")
 
 # creates window
-root=tk.Tk()
+#root=tk.Tk()
 
 # titles window
-root.title('ADN Lab Sign-in Sheet')
+#root.title('ADN Lab Sign-in Sheet')
 
-root.geometry('640x480+50+50')
+#root.geometry('640x480+50+50')
 
 # places a label on the root window
-message = ttk.Label(root, text="Nursing Lab Sign-in Program\n").pack()
+#message = ttk.Label(root, text="Nursing Lab Sign-in Program\n").pack()
 
 #experimenting v
 """Main Menu
 """
-main_menu = ttk.Frame(root)
-ttk.Button(main_menu, text='Sign-in', command=signin_menu).pack(pady=1, padx=1)
-ttk.Button(main_menu, text='Sign-out', command=signout_menu).pack(pady=1, padx=1)
-ttk.Button(main_menu, text='Professor', command=popupwin).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
+#main_menu = ttk.Frame(root)
+#ttk.Button(main_menu, text='Sign-in', command=signin_menu).pack(pady=1, padx=1)
+#ttk.Button(main_menu, text='Sign-out', command=signout_menu).pack(pady=1, padx=1)
+#ttk.Button(main_menu, text='Professor', command=popupwin).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
+
+class Main_menu(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
+
+        self.__create_widgets()
+
+    def __create_widgets(self):
+        ttk.Button(self, text='Sign-in', command=lambda: goto_signin(app)).pack(pady=1, padx=1)
+        ttk.Button(self, text='Sign-out', command=goto_signout).pack(pady=1, padx=1)
+        ttk.Button(self, text='Professor', command=popupwin).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
+
 
 """Signin menu
 """
-signin_menu = ttk.Frame(root)
-ttk.Button(signin_menu, text='<- Back', command=lambda: display('')).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
-ttk.Label(signin_menu, text="Sign-in").place(anchor='n', relx=0.5)
-ttk.Label(signin_menu, text='Name').pack(side=tk.TOP)
-siname = ttk.Entry(signin_menu)
-siname.pack()
-siname.focus()
-ttk.Label(signin_menu, text='PIN/Password').pack()
-pidi = ttk.Entry(signin_menu, show='*')
-pidi.pack()
-ttk.Button(signin_menu, text='Sign-in', command=lambda: print(f'{siname.get()} signed in')).pack(pady=5)
-siname.bind('<Return>', lambda event: print(f'{siname.get()} signed in'))
-pidi.bind('<Return>', lambda event: print(f'{siname.get()} signed in'))
+#signin_menu = ttk.Frame(root)
+#ttk.Button(signin_menu, text='<- Back', command=lambda: display('')).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
+#ttk.Label(signin_menu, text="Sign-in").place(anchor='n', relx=0.5)
+#ttk.Label(signin_menu, text='Name').pack(side=tk.TOP)
+#siname = ttk.Entry(signin_menu)
+#siname.pack()
+#siname.focus()
+#ttk.Label(signin_menu, text='PIN/Password').pack()
+#pidi = ttk.Entry(signin_menu, show='*')
+#pidi.pack()
+#ttk.Button(signin_menu, text='Sign-in', command=lambda: print(f'{siname.get()} signed in')).pack(pady=5)
+#siname.bind('<Return>', lambda event: print(f'{siname.get()} signed in'))
+#pidi.bind('<Return>', lambda event: print(f'{siname.get()} signed in'))
 
+class Signin_menu(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
+
+        self.__create_widgets()
+
+    def __create_widgets(self):
+        ttk.Button(self, text='<- Back', command=lambda: display('')).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
+        ttk.Label(self, text="Sign-in").place(anchor='n', relx=0.5)
+        ttk.Label(self, text='Name').pack(side=tk.TOP)
+        self.siname = ttk.Entry(self)
+        self.siname.pack()
+        self.siname.focus()
+        ttk.Label(self, text='PIN/Password').pack()
+        self.pidi = ttk.Entry(self, show='*')
+        self.pidi.pack()
+        ttk.Button(self, text='Sign-in', command=lambda: print(f'{self.siname.get()} signed in')).pack(pady=5)
+        self.siname.bind('<Return>', lambda event: print(f'{self.siname.get()} signed in'))
+        self.pidi.bind('<Return>', lambda event: print(f'{self.siname.get()} signed in'))
+
+        
 """Signout menu
 """
-signout_menu = ttk.Frame(root)
-ttk.Button(signout_menu, text='<- Back', command=lambda: display('')).pack(pady=3,side=tk.TOP, anchor=tk.W)
-ttk.Label(signout_menu, text="Sign-out").place(anchor='n', relx=0.5)
-ttk.Label(signout_menu, text='Name').pack()
-soname = ttk.Entry(signout_menu)
-soname.pack()
-soname.focus()
-ttk.Label(signout_menu, text='PIN/Password').pack()
-pido = ttk.Entry(signout_menu, show='*')
-pido.pack()
-ttk.Button(signout_menu, text='Sign-out', command=lambda: print(f'{soname.get()} signed-out')).pack(pady=5)
-soname.bind('<Return>', lambda event: print('enter'))
-pido.bind('<Return>', lambda event: print('enter'))
+#signout_menu = ttk.Frame(root)
+#ttk.Button(signout_menu, text='<- Back', command=lambda: display('')).pack(pady=3,side=tk.TOP, anchor=tk.W)
+#ttk.Label(signout_menu, text="Sign-out").place(anchor='n', relx=0.5)
+#ttk.Label(signout_menu, text='Name').pack()
+#soname = ttk.Entry(signout_menu)
+#soname.pack()
+#soname.focus()
+#ttk.Label(signout_menu, text='PIN/Password').pack()
+#pido = ttk.Entry(signout_menu, show='*')
+#pido.pack()
+#ttk.Button(signout_menu, text='Sign-out', command=lambda: print(f'{soname.get()} signed-out')).pack(pady=5)
+#soname.bind('<Return>', lambda event: print('enter'))
+#pido.bind('<Return>', lambda event: print('enter'))
+
+class Signout_menu(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
+
+        self.__create_widgets()
+
+    def __create_widgets(self):
+        ttk.Button(self, text='<- Back', command=lambda: display('')).pack(pady=3,side=tk.TOP, anchor=tk.W)
+        ttk.Label(self, text="Sign-out").place(anchor='n', relx=0.5)
+        ttk.Label(self, text='Name').pack()
+        soname = ttk.Entry(self)
+        soname.pack()
+        soname.focus()
+        ttk.Label(self, text='PIN/Password').pack()
+        pido = ttk.Entry(self, show='*')
+        pido.pack()
+        ttk.Button(self, text='Sign-out', command=lambda: print(f'{soname.get()} signed-out')).pack(pady=5)
+        soname.bind('<Return>', lambda event: print('enter'))
+        pido.bind('<Return>', lambda event: print('enter'))
+        
 
 """Admin menu
 """
-admin_menu = ttk.Frame(root)
-admin_menu.columnconfigure(0, weight=1, minsize=150)
-admin_menu.columnconfigure(1, weight=3)
-ttk.Button(admin_menu, text='<- Back', command=lambda: display('')).grid(sticky='nesw',column=0, row=0)
-ttk.Button(admin_menu, text='Show signed in names', command='' ).grid(column=0, row=1, sticky='nesw')
-ttk.Button(admin_menu, text='Show Log', command=lambda: log_print(pool)).grid(column=0, row=2, sticky='nesw')
-ttk.Button(admin_menu, text='Search log for name', command='' ).grid(column=0, row=3, sticky='nesw')
-ttk.Button(admin_menu, text='Show final entry for\n each user', command='' ).grid(column=0, row=4, sticky='nesw')
-ttk.Button(admin_menu, text='Save log to text file', command='' ).grid(column=0, row=5, sticky='nesw')
+#admin_menu = ttk.Frame(root)
+#admin_menu.columnconfigure(0, weight=1, minsize=150)
+#admin_menu.columnconfigure(1, weight=3)
+#ttk.Button(admin_menu, text='<- Back', command=lambda: display('')).grid(sticky='nesw',column=0, row=0)
+#ttk.Button(admin_menu, text='Show signed in names', command='' ).grid(column=0, row=1, sticky='nesw')
+#ttk.Button(admin_menu, text='Show Log', command=lambda: log_print(pool)).grid(column=0, row=2, sticky='nesw')
+#ttk.Button(admin_menu, text='Search log for name', command='' ).grid(column=0, row=3, sticky='nesw')
+#ttk.Button(admin_menu, text='Show final entry for\n each user', command='' ).grid(column=0, row=4, sticky='nesw')
+#ttk.Button(admin_menu, text='Save log to text file', command='' ).grid(column=0, row=5, sticky='nesw')
 
-monitor = ScrolledText(admin_menu)
-monitor['state'] = 'disabled'
-monitor.grid(column=1,row=1,rowspan=4)
+#monitor = ScrolledText(admin_menu)
+#monitor['state'] = 'disabled'
+#monitor.grid(column=1,row=1,rowspan=4)
 
-uname = ttk.Entry(admin_menu)
-uname.grid(column=1, row=0)
-ttk.Label(admin_menu, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
+#uname = ttk.Entry(admin_menu)
+#uname.grid(column=1, row=0)
+#ttk.Label(admin_menu, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
+
+class Admin_menu(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
+
+        self.columnconfigure(0, weight=1, minsize=150)
+        self.columnconfigure(1, weight=3)
+
+        self.__create_widgets()
+
+    def __create_widgets(self):
+        ttk.Button(self, text='<- Back', command=lambda: display('')).grid(sticky='nesw',column=0, row=0)
+        ttk.Button(self, text='Show signed in names', command='' ).grid(column=0, row=1, sticky='nesw')
+        ttk.Button(self, text='Show Log', command=lambda: log_print(pool)).grid(column=0, row=2, sticky='nesw')
+        ttk.Button(self, text='Search log for name', command='' ).grid(column=0, row=3, sticky='nesw')
+        ttk.Button(self, text='Show final entry for\n each user', command='' ).grid(column=0, row=4, sticky='nesw')
+        ttk.Button(self, text='Save log to text file', command='' ).grid(column=0, row=5, sticky='nesw')
+
+        monitor = ScrolledText(self)
+        monitor['state'] = 'disabled'
+        monitor.grid(column=1,row=1,rowspan=4)
+
+        uname = ttk.Entry(self)
+        uname.grid(column=1, row=0)
+        ttk.Label(self, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
 
 
-def display(frame):
+def display(app,frame):
     if frame == '':
         print("main menu")
-        signin_menu.pack_forget()
-        signout_menu.pack_forget()
-        admin_menu.pack_forget()
+        app.signin_menu.pack_forget()
+        app.signout_menu.pack_forget()
+        app.admin_menu.pack_forget()
         clear_entry()
-        return main_menu.pack(expand=True,fill=tk.BOTH)
+        return app.main_menu.pack(expand=True,fill=tk.BOTH)
     if frame == 'signin_menu':
         print("signin menu")
-        main_menu.pack_forget()
-        return signin_menu.pack(expand=True,fill=tk.BOTH)
+        app.main_menu.pack_forget()
+        return app.signin_menu.pack(expand=True,fill=tk.BOTH)
     if frame == 'signout_menu':
         print('signout menu')
-        main_menu.pack_forget()
-        signin_menu.pack_forget()
-        return signout_menu.pack(expand=True,fill=tk.BOTH)
+        app.main_menu.pack_forget()
+        app.signin_menu.pack_forget()
+        return app.signout_menu.pack(expand=True,fill=tk.BOTH)
     if frame == 'admin_menu':
         print("admin menu")
-        main_menu.pack_forget()
-        return admin_menu.pack(expand=True,fill=tk.BOTH)
+        app.main_menu.pack_forget()
+        return app.admin_menu.pack(expand=True,fill=tk.BOTH)
 
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title('ADN Lab Sign-in Sheet')
+        self.geometry('640x480+50+50')
+        ttk.Label(self, text="Nursing Lab Sign-in Program\n").pack()
+
+        self.__create_widgets()
+        self.show_mainmenu()
+
+    def __create_widgets(self):
+        self.main_menu = Main_menu(self)#.pack(expand=True,fill=tk.BOTH)
+        self.signin_menu = Signin_menu(self)#.pack(expand=True,fill=tk.BOTH)
+        self.signout_menu = Signout_menu(self)#.pack(expand=True,fill=tk.BOTH)
+        self.admin_menu = Admin_menu(self)#.pack(expand=True,fill=tk.BOTH)
+
+    def show_mainmenu(self):
+        self.main_menu.pack(expand=True,fill=tk.BOTH)
+
+    def hide_mainmenu(self):
+        self.main_menu.pack_forget()
+
+    def show_signinmenu(self):
+        self.signin_menu.pack(expand=True,fill=tk.BOTH)
+
+    def hide_signinmenu(self):
+        self.signin_menu.pack_forget()
+
+    def show_signoutmenu(self):
+        self.signout_menu.pack(expand=True,fill=tk.BOTH)
+
+    def hide_signoutmenu(self):
+        self.signout_menu.pack_forget()
+
+    def show_adminmenu(self):
+        self.admin_menu.pack(expand=True,fill=tk.BOTH)
+
+    def hide_adminmenu(self):
+        self.admin_menu.pack_forget()
 
 def main():
-    display('')
+    app = App()
+    #display(app,'')
     u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
     log=list((initialize_log('log.json',u0))) # initialize log list
     pool=set(pool_load("pool.json")) # initialise the set of signed in names
-
+    
     # keep the window displaying
-    root.mainloop()
+    #root.mainloop()
+    app.mainloop()
 
-main()
+if __name__ == "__main__":
+    main()
