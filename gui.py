@@ -88,9 +88,9 @@ def find_previous(log,uname):
             return i
 # find last instance of uname in the log and return that instance
 
-def find_name(log):
+def find_name(log,uname):
     alist = []
-    uname=input("Enter name to search for in the log: ")
+    uname=uname
     for i in log:
         if i.uname == uname:
             alist.append(i)
@@ -225,7 +225,8 @@ class Signin_menu(ttk.Frame):
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
-        ttk.Label(self, text="Sign-in").place(anchor='n', relx=0.5)
+        self.header = ttk.Label(self, text="Sign-in")
+        self.header.place(anchor='n', relx=0.5) # fix this so when it changes it looks better
         ttk.Label(self, text='Name').pack(side=tk.TOP)
         self.siname = ttk.Entry(self)
         self.siname.pack()
@@ -233,9 +234,31 @@ class Signin_menu(ttk.Frame):
         ttk.Label(self, text='PIN/Password').pack()
         self.pidi = ttk.Entry(self, show='*')
         self.pidi.pack()
-        ttk.Button(self, text='Sign-in', command=lambda: print(f'{self.siname.get()} signed in')).pack(pady=5)
-        self.siname.bind('<Return>', lambda event: print(f'{self.siname.get()} signed in'))
-        self.pidi.bind('<Return>', lambda event: print(f'{self.siname.get()} signed in'))
+        ttk.Button(self, text='Sign-in', command=lambda: self.sign_in(self.container.pool,self.container.log)).pack(pady=5)
+        self.siname.bind('<Return>', lambda event: self.sign_in(self.container.pool,self.container.log))
+        self.pidi.bind('<Return>', lambda event: self.sign_in(self.container.pool,self.container.log))
+
+    def sign_in(self, pool, log):
+        uname= self.siname.get()
+        pid=self.pidi.get()
+        if uname in pool:
+            self.header.config(text = 'Sign-in\nThe name you have entered is already signed into the lab')
+            return
+        if uname == '':
+            return
+        if pid == "":
+            return
+        now = datetime.now().replace(microsecond=0)
+        index = find_previous(log,uname)
+        if index != None:
+            u1 = Login(uname,pid,now,'         -         ',index.ttotal+timedelta(minutes=0))
+        else:
+            u1 = Login(uname,pid,now,'         -         ',timedelta(minutes=0))
+        pool.add(u1.uname)
+        pool_save(pool,"pool.json")
+        log.append(u1)
+        save_object(log,"log.json")
+        self.container.goto_mainmenu()
 
         
 """Signout menu
@@ -249,7 +272,8 @@ class Signout_menu(ttk.Frame):
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(pady=3,side=tk.TOP, anchor=tk.W)
-        ttk.Label(self, text="Sign-out").place(anchor='n', relx=0.5)
+        self.header = ttk.Label(self, text="Sign-out")
+        self.header.place(anchor='n', relx=0.5)
         ttk.Label(self, text='Name').pack()
         self.soname = ttk.Entry(self)
         self.soname.pack()
@@ -257,10 +281,29 @@ class Signout_menu(ttk.Frame):
         ttk.Label(self, text='PIN/Password').pack()
         self.pido = ttk.Entry(self, show='*')
         self.pido.pack()
-        ttk.Button(self, text='Sign-out', command=lambda: print(f'{self.soname.get()} signed-out')).pack(pady=5)
-        self.soname.bind('<Return>', lambda event: print('enter'))
-        self.pido.bind('<Return>', lambda event: print('enter'))
-        
+        ttk.Button(self, text='Sign-out', command=lambda: self.sign_out(self.container.pool,self.container.log)).pack(pady=5)
+        self.soname.bind('<Return>', lambda event: self.sign_out(self.container.pool,self.container.log))
+        self.pido.bind('<Return>', lambda event: self.sign_out(self.container.pool,self.container.log))
+
+    def sign_out(self, pool, log):
+        uname = self.soname.get()
+        if uname not in pool:
+            self.header.config(text="The name you entered was not signed into the lab")
+            return
+        now = datetime.now().replace(microsecond=0)
+        index = find_previous(log,uname)
+        pid = self.pido.get()
+        if pid == "":
+            return
+        if pid != index.pid:
+            self.header.config(text="Personal pin/password didn't match signin. Please try again.")
+            return
+        u1 = Login(uname,pid,index.signin,now,(now-index.signin)+index.ttotal)
+        pool.remove(u1.uname)
+        pool_save(pool,"pool.json")
+        log.append(u1)
+        save_object(log,"log.json")
+        self.container.goto_mainmenu()
 
 """Admin menu
 """
@@ -276,11 +319,11 @@ class Admin_menu(ttk.Frame):
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).grid(sticky='nesw',column=0, row=0)
-        ttk.Button(self, text='Show signed in names', command='' ).grid(column=0, row=1, sticky='nesw')
-        ttk.Button(self, text='Show Log', command=lambda: log_print(self.pool)).grid(column=0, row=2, sticky='nesw')
-        ttk.Button(self, text='Search log for name', command='' ).grid(column=0, row=3, sticky='nesw')
-        ttk.Button(self, text='Show final entry for\n each user', command='' ).grid(column=0, row=4, sticky='nesw')
-        ttk.Button(self, text='Save log to text file', command='' ).grid(column=0, row=5, sticky='nesw')
+        ttk.Button(self, text='Show signed in names', command=lambda: log_print(self.container.pool)).grid(column=0, row=1, sticky='nesw')
+        ttk.Button(self, text='Show Log', command=lambda: log_print(self.container.log)).grid(column=0, row=2, sticky='nesw')
+        ttk.Button(self, text='Search log for name', command=lambda: find_name(self.container.log, self.uname.get())).grid(column=0, row=3, sticky='nesw')
+        ttk.Button(self, text='Show final entry for\n each user', command=lambda: show_final(self.container.log)).grid(column=0, row=4, sticky='nesw')
+        ttk.Button(self, text='Save log to text file', command=lambda: log_save(self.container.log, "log.txt")).grid(column=0, row=5, sticky='nesw')
 
         self.monitor = ScrolledText(self)
         self.monitor['state'] = 'disabled'
@@ -291,28 +334,6 @@ class Admin_menu(ttk.Frame):
         ttk.Label(self, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
 
 
-def display(app,frame):
-    if frame == '':
-        print("main menu")
-        app.signin_menu.pack_forget()
-        app.signout_menu.pack_forget()
-        app.admin_menu.pack_forget()
-        clear_entry()
-        return app.main_menu.pack(expand=True,fill=tk.BOTH)
-    if frame == 'signin_menu':
-        print("signin menu")
-        app.main_menu.pack_forget()
-        return app.signin_menu.pack(expand=True,fill=tk.BOTH)
-    if frame == 'signout_menu':
-        print('signout menu')
-        app.main_menu.pack_forget()
-        app.signin_menu.pack_forget()
-        return app.signout_menu.pack(expand=True,fill=tk.BOTH)
-    if frame == 'admin_menu':
-        print("admin menu")
-        app.main_menu.pack_forget()
-        return app.admin_menu.pack(expand=True,fill=tk.BOTH)
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -320,11 +341,13 @@ class App(tk.Tk):
         self.geometry('640x480+50+50')
         ttk.Label(self, text="Nursing Lab Sign-in Program\n").pack()
 
+        self.u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
+        self.log=list((initialize_log('log.json',self.u0))) # initialize log list
+        self.pool=set(pool_load("pool.json")) # initialise the set of signed in names
+
         self.__create_widgets()
         self.show_mainmenu()
-
-        self.log = log
-        self.pool = pool
+        
 
     def __create_widgets(self):
         self.main_menu = Main_menu(self)
@@ -386,8 +409,8 @@ class App(tk.Tk):
 
 def main():
     u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
-    log=list((initialize_log('log.json',u0))) # initialize log list
-    pool=set(pool_load("pool.json")) # initialise the set of signed in names
+    #log=list((initialize_log('log.json',u0))) # initialize log list
+    #pool=set(pool_load("pool.json")) # initialise the set of signed in names
     app = App()
     
     # keep the window displaying
