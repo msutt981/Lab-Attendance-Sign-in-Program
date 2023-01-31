@@ -350,7 +350,8 @@ class Admin_menu(ttk.Frame):
 
         self.uname = ttk.Entry(self)
         self.uname.grid(column=1, row=0)
-        ttk.Label(self, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
+        self.uname.bind('<Return>', lambda event:self.search_log())
+        ttk.Label(self, text='Search Name Entry').grid(column=1, row=0, sticky='w', padx=90)
         self.monitor.insert('1.0', "test")
 
     def print_mon(self,txt):
@@ -370,10 +371,13 @@ class Admin_menu(ttk.Frame):
 
     def print_pool(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        i=1
-        for x in self.container.pool:
-            self.monitor.insert(f'{i}.0', f'{x}\n')
-            i+=1
+        if self.container.pool == set():
+            self.monitor.insert('1.0', "No names signed in")
+        else:
+            i=1
+            for x in self.container.pool:
+                self.monitor.insert(f'{i}.0', f'{x}\n')
+                i+=1
 
     def search_log(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
