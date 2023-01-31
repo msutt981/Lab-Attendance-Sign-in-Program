@@ -348,7 +348,7 @@ class Admin_menu(ttk.Frame):
         self.monitor = ScrolledText(self, width=300)
         self.monitor.grid(column=1,row=1,rowspan=4)
 
-        self.uname = ttk.Entry(self)
+        self.uname = ttk.Entry(self, width = 55)
         self.uname.grid(column=1, row=0)
         self.uname.bind('<Return>', lambda event:self.search_log())
         ttk.Label(self, text='Search Name Entry').grid(column=1, row=0, sticky='w', padx=90)
@@ -459,6 +459,7 @@ class App(tk.Tk):
     def goto_signin(self):
         self.hide_mainmenu()
         self.show_signinmenu()
+        self.signin_menu.footer.config(text = "")
         self.signin_menu.siname.focus()
 
     def goto_mainmenu(self):
@@ -471,6 +472,7 @@ class App(tk.Tk):
     def goto_signout(self):
         self.hide_mainmenu()
         self.show_signoutmenu()
+        self.signout_menu.footer.config(text = "")
         self.signout_menu.soname.focus()
 
     def goto_adminmenu(self):
