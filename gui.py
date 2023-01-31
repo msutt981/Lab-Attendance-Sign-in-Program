@@ -209,10 +209,11 @@ class Main_menu(ttk.Frame):
         self.container = container
         self.style = ttk.Style(self)
         #self.style.configure('TFrame', background='#fbceb1')
+        self.style.configure('big.TButton', font=(None, 20))
 
     def __create_widgets(self):
-        ttk.Button(self, text='Sign-in', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1)
-        ttk.Button(self, text='Sign-out', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1)
+        ttk.Button(self, text='Sign-in', style='big.TButton', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1)
+        ttk.Button(self, text='Sign-out', style='big.TButton', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1)
         ttk.Button(self, text='Professor', command=lambda: popupwin(self.container)).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
 
 
