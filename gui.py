@@ -215,7 +215,11 @@ class Main_menu(ttk.Frame):
         ttk.Button(self, text='Sign-in', style='big.TButton', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1)
         ttk.Button(self, text='Sign-out', style='big.TButton', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1)
         ttk.Button(self, text='Professor', command=lambda: popupwin(self.container)).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
+        self.footer = ttk.Label(self, text="")
+        self.footer.pack()
 
+    def set_footer(self,txt):
+        self.footer.configure(text = txt)
 
 """Signin menu
 """
@@ -223,8 +227,8 @@ class Signin_menu(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
-        self.__create_widgets()
         self.container = container
+        self.__create_widgets()
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
@@ -267,6 +271,8 @@ class Signin_menu(ttk.Frame):
         log.append(u1)
         save_object(log,"log.json")
         self.container.goto_mainmenu()
+        self.container.main_menu.set_footer(f'{uname} signed in at {now}.')
+        self.after(5000,lambda: self.container.main_menu.set_footer(''))
 
         
 """Signout menu
@@ -316,6 +322,8 @@ class Signout_menu(ttk.Frame):
         log.append(u1)
         save_object(log,"log.json")
         self.container.goto_mainmenu()
+        self.container.main_menu.set_footer(f'{uname} signed out at {now}.\nHave a nice day.')
+        self.after(5000,lambda: self.container.main_menu.set_footer(''))
 
 """Admin menu
 """
