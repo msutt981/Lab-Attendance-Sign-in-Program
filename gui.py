@@ -354,7 +354,7 @@ class Admin_menu(ttk.Frame):
         self.monitor.insert('1.0', "test")
 
     def print_mon(self,txt):
-        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        #self.container.admin_menu.monitor.delete('1.0', tk.END)
         i=2
         for x in txt:
             self.monitor.insert(f'{i}.0', f'{x}\n')
@@ -390,13 +390,14 @@ class Admin_menu(ttk.Frame):
             self.monitor.insert('1.0', "No results found.")
 
     def show_final(self):
+        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
         alist=[]
         uuname=set()
         for x in reversed(self.container.log):
             if x.uname not in uuname:
                 uuname.add(x.uname)
                 alist.append(x)
-        self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
         self.print_mon(alist)
 
 
