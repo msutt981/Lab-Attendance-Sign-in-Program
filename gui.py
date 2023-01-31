@@ -332,26 +332,72 @@ class Admin_menu(ttk.Frame):
         super().__init__(container)
 
         self.columnconfigure(0, weight=1, minsize=150)
-        self.columnconfigure(1, weight=3)
+        self.columnconfigure(1, weight=4, minsize=300)
 
         self.__create_widgets()
         self.container = container
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).grid(sticky='nesw',column=0, row=0)
-        ttk.Button(self, text='Show signed in names', command=lambda: log_print(self.container.pool)).grid(column=0, row=1, sticky='nesw')
-        ttk.Button(self, text='Show Log', command=lambda: log_print(self.container.log)).grid(column=0, row=2, sticky='nesw')
-        ttk.Button(self, text='Search log for name', command=lambda: find_name(self.container.log, self.uname.get())).grid(column=0, row=3, sticky='nesw')
-        ttk.Button(self, text='Show final entry for\n each user', command=lambda: show_final(self.container.log)).grid(column=0, row=4, sticky='nesw')
+        ttk.Button(self, text='Show signed in names', command=lambda: self.print_pool()).grid(column=0, row=1, sticky='nesw')
+        ttk.Button(self, text='Show Log', command=lambda: self.print_log()).grid(column=0, row=2, sticky='nesw')
+        ttk.Button(self, text='Search log for name', command=lambda: self.search_log()).grid(column=0, row=3, sticky='nesw')
+        ttk.Button(self, text='Show final entry for\n each user', command=lambda: self.show_final()).grid(column=0, row=4, sticky='nesw')
         ttk.Button(self, text='Save log to text file', command=lambda: log_save(self.container.log, "log.txt")).grid(column=0, row=5, sticky='nesw')
 
-        self.monitor = ScrolledText(self)
-        self.monitor['state'] = 'disabled'
+        self.monitor = ScrolledText(self, width=300)
         self.monitor.grid(column=1,row=1,rowspan=4)
 
         self.uname = ttk.Entry(self)
         self.uname.grid(column=1, row=0)
         ttk.Label(self, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
+        self.monitor.insert('1.0', "test")
+
+    def print_mon(self,txt):
+        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        i=2
+        for x in txt:
+            self.monitor.insert(f'{i}.0', f'{x}\n')
+            i+=1
+
+    def print_log(self):
+        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
+        i = 2
+        for x in self.container.log:
+            self.monitor.insert(f'{i}.0', f'{x}\n')
+            i+=1
+
+    def print_pool(self):
+        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        i=1
+        for x in self.container.pool:
+            self.monitor.insert(f'{i}.0', f'{x}\n')
+            i+=1
+
+    def search_log(self):
+        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        i=2
+        alist = []
+        uname = self.uname.get()
+        for x in self.container.log:
+            if x.uname == uname:
+                alist.append(x)
+        if len(alist) > 0:
+            self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
+            self.print_mon(alist)
+        else:
+            self.monitor.insert('1.0', "No results found.")
+
+    def show_final(self):
+        alist=[]
+        uuname=set()
+        for x in reversed(self.container.log):
+            if x.uname not in uuname:
+                uuname.add(x.uname)
+                alist.append(x)
+        self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
+        self.print_mon(alist)
 
 
 """App
@@ -360,7 +406,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('ADN Lab Sign-in Sheet')
-        self.geometry('640x480+50+50')
+        self.geometry('900x480+50+50')
         ttk.Label(self, text="Nursing Lab Sign-in Program\n", anchor='center').pack(ipadx=10)
         self.configure(bg = '#fbceb1') # a splash of color
         #self.style = ttk.Style(self)
