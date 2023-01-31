@@ -207,6 +207,8 @@ class Main_menu(ttk.Frame):
 
         self.__create_widgets()
         self.container = container
+        self.style = ttk.Style(self)
+        #self.style.configure('TFrame', background='#fbceb1')
 
     def __create_widgets(self):
         ttk.Button(self, text='Sign-in', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1)
@@ -235,18 +237,23 @@ class Signin_menu(ttk.Frame):
         self.pidi = ttk.Entry(self, show='*')
         self.pidi.pack()
         ttk.Button(self, text='Sign-in', command=lambda: self.sign_in(self.container.pool,self.container.log)).pack(pady=5)
+        self.footer = ttk.Label(self, text='')
+        self.footer.pack()
         self.siname.bind('<Return>', lambda event: self.sign_in(self.container.pool,self.container.log))
         self.pidi.bind('<Return>', lambda event: self.sign_in(self.container.pool,self.container.log))
 
     def sign_in(self, pool, log):
+        self.footer.config(text="")
         uname= self.siname.get()
         pid=self.pidi.get()
         if uname in pool:
-            self.header.config(text = 'Sign-in\nThe name you have entered is already signed into the lab')
+            self.footer.config(text = 'The name you have entered is already signed into the lab')
             return
         if uname == '':
+            self.footer.config(text = 'Please enter your name')
             return
         if pid == "":
+            self.footer.config(text = 'Please enter (and remember) your PIN/Password. It will be required to sign-out.')
             return
         now = datetime.now().replace(microsecond=0)
         index = find_previous(log,uname)
@@ -282,21 +289,25 @@ class Signout_menu(ttk.Frame):
         self.pido = ttk.Entry(self, show='*')
         self.pido.pack()
         ttk.Button(self, text='Sign-out', command=lambda: self.sign_out(self.container.pool,self.container.log)).pack(pady=5)
+        self.footer = ttk.Label(self, text="")
+        self.footer.pack()
         self.soname.bind('<Return>', lambda event: self.sign_out(self.container.pool,self.container.log))
         self.pido.bind('<Return>', lambda event: self.sign_out(self.container.pool,self.container.log))
 
     def sign_out(self, pool, log):
+        self.footer.config(text='')
         uname = self.soname.get()
         if uname not in pool:
-            self.header.config(text="The name you entered was not signed into the lab")
+            self.footer.config(text="The name you entered was not signed into the lab")
             return
         now = datetime.now().replace(microsecond=0)
         index = find_previous(log,uname)
         pid = self.pido.get()
         if pid == "":
+            self.footer.config(text="Please enter PIN/Password you used to sign-in")
             return
         if pid != index.pid:
-            self.header.config(text="Personal pin/password didn't match signin. Please try again.")
+            self.footer.config(text="Personal PIN/password didn't match signin. Please try again.")
             return
         u1 = Login(uname,pid,index.signin,now,(now-index.signin)+index.ttotal)
         pool.remove(u1.uname)
@@ -334,12 +345,18 @@ class Admin_menu(ttk.Frame):
         ttk.Label(self, text='Name Entry').grid(column=1, row=0, sticky='w', padx=90)
 
 
+"""App
+"""
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('ADN Lab Sign-in Sheet')
         self.geometry('640x480+50+50')
-        ttk.Label(self, text="Nursing Lab Sign-in Program\n").pack()
+        ttk.Label(self, text="Nursing Lab Sign-in Program\n", anchor='center').pack(ipadx=10)
+        self.configure(bg = '#fbceb1') # a splash of color
+        #self.style = ttk.Style(self)
+        #self.style.configure('TLabel', background='#fbceb1')
+        #self.style.configure('TFrame', background='#fbceb1')
 
         self.u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
         self.log=list((initialize_log('log.json',self.u0))) # initialize log list
