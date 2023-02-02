@@ -77,7 +77,18 @@ class Login: # Builds logins as objects
         self.pid=pid
 
     def __str__(self):
-        return f"{self.signin} || {self.signout} || {self.ttotal} || {self.uname} || {self.pid}"
+        return f"{self.signin} || {self.signout} ||   {self.ttotal}  || {self.uname_col()} || {self.pid}"
+
+    def uname_col(self):
+        ulen = len(self.uname)
+        if ulen < 17:
+            whitespace = 16 - ulen
+            space = " "
+            spacer = space*whitespace
+            final = str(f'{self.uname}{spacer}')
+            return final
+        else:
+            return self.uname
 
 def show_header():
     print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
