@@ -212,10 +212,12 @@ class Main_menu(ttk.Frame):
         self.style.configure('big.TButton', font=(None, 20))
 
     def __create_widgets(self):
-        ttk.Button(self, text='Sign-in', style='big.TButton', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1)
-        ttk.Button(self, text='Sign-out', style='big.TButton', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1)
+        ttk.Label(self, text="").pack(ipady=60)
+        ttk.Button(self, text='Sign-in', style='big.TButton', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1, anchor=tk.CENTER)
+        ttk.Button(self, text='Sign-out', style='big.TButton', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1, anchor=tk.CENTER)
         ttk.Button(self, text='Professor', command=lambda: popupwin(self.container)).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
-        self.footer = ttk.Label(self, text="")
+        ttk.Label(self, text="").pack()
+        self.footer = ttk.Label(self, text="", justify='center')
         self.footer.pack()
 
     def set_footer(self,txt):
@@ -232,7 +234,7 @@ class Signin_menu(ttk.Frame):
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
-        self.header = ttk.Label(self, text="Sign-in")
+        self.header = ttk.Label(self, text="Sign-in", font=('None', 15))
         self.header.place(anchor='n', relx=0.5) # fix this so when it changes it looks better
         ttk.Label(self, text='Name').pack(side=tk.TOP)
         self.siname = ttk.Entry(self)
@@ -286,7 +288,7 @@ class Signout_menu(ttk.Frame):
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(pady=3,side=tk.TOP, anchor=tk.W)
-        self.header = ttk.Label(self, text="Sign-out")
+        self.header = ttk.Label(self, text="Sign-out", font=('None', 15))
         self.header.place(anchor='n', relx=0.5)
         ttk.Label(self, text='Name').pack()
         self.soname = ttk.Entry(self)
@@ -411,8 +413,8 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('ADN Lab Sign-in Sheet')
-        self.geometry('900x480+50+50')
-        ttk.Label(self, text="Nursing Lab Sign-in Program\n", anchor='center').pack(ipadx=10)
+        self.geometry('900x520+50+50')
+        ttk.Label(self, font=('None', 20), text="Nursing Lab Sign-in\n", anchor=tk.S).pack(ipadx=5, ipady=5, pady=0)
         self.configure(bg = '#fbceb1') # a splash of color
         #self.style = ttk.Style(self)
         #self.style.configure('TLabel', background='#fbceb1')
