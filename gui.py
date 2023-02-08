@@ -157,6 +157,7 @@ def log_save(obj, filename):
     now = datetime.now().replace(microsecond=0).strftime("%Y-%m-%d_%H.%M.%S.")
     try:
         with open(now+filename, "w+") as f:
+            f.write(f"       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
             for x in obj:
                 f.write(f"{x}\n")
     except Exception as ex:
