@@ -142,7 +142,7 @@ def log_print(log):
 def save_object(obj,filename):
     try:
         with open(filename, "w") as f: #check what all the letter modifiers do
-            json.dump([ob.__dict__ for ob in obj], f, cls=DateTimeAwareJSONEncoder, indent=2)
+            json.dump([ob.__dict__ for ob in obj], f, cls=DateTimeAwareJSONEncoder, indent=4)
     except Exception as ex:
         print("Error: ", ex)
 
