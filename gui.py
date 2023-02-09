@@ -399,7 +399,7 @@ class Admin_menu(ttk.Frame):
         alist = []
         uname = self.uname.get()
         for x in self.container.log:
-            if x.uname == uname:
+            if (uname.lower() in x.uname.lower()) and uname != "": # remove 'and' to : to have blank entry show full log
                 alist.append(x)
         if len(alist) > 0:
             self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
