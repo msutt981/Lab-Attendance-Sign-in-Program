@@ -492,6 +492,7 @@ class App(tk.Tk):
     def goto_adminmenu(self):
         self.hide_mainmenu()
         self.show_adminmenu()
+        self.admin_menu.uname.focus()
 
     def clear_entry(self):
         self.signin_menu.siname.delete(0, tk.END)
