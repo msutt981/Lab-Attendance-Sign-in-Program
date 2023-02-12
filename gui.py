@@ -90,36 +90,11 @@ class Login: # Builds logins as objects
         else:
             return self.uname
 
-def show_header():
-    print("       Sign-in      ||       Sign-out      || Cumulative time in Lab || Name || PIN\n")
-
 def find_previous(log,uname):
     for i in reversed(log):
         if i.uname == uname:
             return i
 # find last instance of uname in the log and return that instance
-
-def find_name(log,uname):
-    alist = []
-    uname=uname
-    for i in log:
-        if i.uname == uname:
-            alist.append(i)
-    if len(alist) > 0:
-        print(f"")
-        show_header()
-        log_print(alist)
-    else: print(f"\n No results found.")
-
-def show_final(log):
-  alist=[]
-  uuname=set()
-  for i in reversed(log):
-    if i.uname not in uuname:
-      uuname.add(i.uname)
-      alist.append(i)
-  show_header()
-  log_print(alist)
 
 def initialize_log(filename,u0):
     path = Path(filename)
@@ -133,11 +108,6 @@ def initialize_log(filename,u0):
         log=[u0]
     return log
 # ^ initializes the log list with either previously saved data or a clean list
-
-def log_print(log):
-    for x in log:
-        print(x)
-# used to loop through list and print the objects in it in human readable form
 
 def save_object(obj,filename):
     try:
@@ -181,7 +151,7 @@ def pool_load(filename):
 
 """
 """
-def close_win(top):
+def close_win(top): # ended up not using. remove when cleaning up if still not needed
     top.destroy()
 
 """https://www.tutorialspoint.com/creating-a-popup-message-box-with-an-entry-field-in-tkinter
@@ -229,11 +199,6 @@ class Main_menu(ttk.Frame):
         ttk.Button(self, text='Sign-out', style='big.TButton', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1, anchor=tk.CENTER)
         ttk.Button(self, text='Professor', command=lambda: popupwin(self.container)).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
         ttk.Label(self, text="").pack()
-        #self.footer = ttk.Label(self, text="", justify='center')
-        #self.footer.pack()
-
-    def set_footer(self,txt):
-        self.footer.configure(text = txt)
 
     def add_msg(self,txt):
         alist = []
