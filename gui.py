@@ -237,8 +237,7 @@ class Main_menu(ttk.Frame):
 
     def add_msg(self,txt):
         alist = []
-        tmsg = ttk.Label(self, text=txt, justify='center')
-        alist.append(tmsg)
+        alist.append(ttk.Label(self, text=txt, justify='center'))
         alist[0].pack()
         self.after(5000,lambda: alist[0].destroy())
 
