@@ -235,7 +235,7 @@ class Signin_menu(ttk.Frame):
 
     def sign_in(self, pool, log):
         self.footer.config(text="")
-        uname= self.siname.get()
+        uname= self.siname.get().strip()
         pid=self.pidi.get()
         if uname in pool:
             self.footer.config(text = 'The name you have entered is already signed into the lab')
