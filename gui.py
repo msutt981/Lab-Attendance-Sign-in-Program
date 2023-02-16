@@ -202,7 +202,7 @@ class Main_menu(ttk.Frame):
 
     def add_msg(self,txt):
         alist = []
-        alist.append(ttk.Label(self, text=txt, justify='center'))
+        alist.append(ttk.Label(self, text=txt, justify='center', font=("None",15)))
         alist[0].pack()
         self.after(5000,lambda: alist[0].destroy())
 
@@ -228,7 +228,7 @@ class Signin_menu(ttk.Frame):
         self.pidi = ttk.Entry(self, show='*', font=("None",20))
         self.pidi.pack()
         ttk.Button(self, text='Sign-in', command=lambda: self.sign_in(self.container.pool,self.container.log)).pack(pady=5)
-        self.footer = ttk.Label(self, text='')
+        self.footer = ttk.Label(self, text='', font=("none",15))
         self.footer.pack()
         self.siname.bind('<Return>', lambda event: self.sign_in(self.container.pool,self.container.log))
         self.pidi.bind('<Return>', lambda event: self.sign_in(self.container.pool,self.container.log))
@@ -281,7 +281,7 @@ class Signout_menu(ttk.Frame):
         self.pido = ttk.Entry(self, show='*', font=("None",20))
         self.pido.pack()
         ttk.Button(self, text='Sign-out', command=lambda: self.sign_out(self.container.pool,self.container.log)).pack(pady=5)
-        self.footer = ttk.Label(self, text="")
+        self.footer = ttk.Label(self, text="", font=("none",15))
         self.footer.pack()
         self.soname.bind('<Return>', lambda event: self.sign_out(self.container.pool,self.container.log))
         self.pido.bind('<Return>', lambda event: self.sign_out(self.container.pool,self.container.log))
@@ -334,7 +334,7 @@ class Admin_menu(ttk.Frame):
 
         self.uname = ttk.Entry(self, width = 55)
         self.uname.grid(column=1, row=0)
-        self.uname.bind('<Return>', lambda event:self.search_log())
+        self.uname.bind('<Return>', lambda event:self.search_date()) # change back to .search_log
         ttk.Label(self, text='Search Name Entry').grid(column=1, row=0, sticky='w', padx=90)
         self.monitor.insert('1.0', "test")
 
@@ -370,6 +370,20 @@ class Admin_menu(ttk.Frame):
         uname = self.uname.get()
         for x in self.container.log:
             if (uname.lower() in x.uname.lower()) and uname != "": # remove 'and' to : to have blank entry show full log
+                alist.append(x)
+        if len(alist) > 0:
+            self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
+            self.print_mon(alist)
+        else:
+            self.monitor.insert('1.0', "No results found.")
+
+    def search_date(self):
+        self.container.admin_menu.monitor.delete('1.0', tk.END)
+        i=2
+        alist = []
+        uname = self.uname.get()
+        for x in self.container.log:
+            if uname in x.signin.strftime("%Y-%m-%d"): # going to need to seperate this into various searches?
                 alist.append(x)
         if len(alist) > 0:
             self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
