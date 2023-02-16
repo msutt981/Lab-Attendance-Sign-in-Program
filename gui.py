@@ -13,6 +13,7 @@ import json
 from json import JSONEncoder, JSONDecoder
 from pathlib import Path
 import ast
+import string
 
 # https://gist.github.com/majgis/4200488
 #Taken from http://taketwoprogramming.blogspot.com/2009/06/subclassing-jsonencoder-and-jsondecoder.html
@@ -235,7 +236,7 @@ class Signin_menu(ttk.Frame):
 
     def sign_in(self, pool, log):
         self.footer.config(text="")
-        uname= self.siname.get().strip()
+        uname= string.capwords(self.siname.get())
         pid=self.pidi.get()
         if uname in pool:
             self.footer.config(text = 'The name you have entered is already signed into the lab')
@@ -288,7 +289,7 @@ class Signout_menu(ttk.Frame):
 
     def sign_out(self, pool, log):
         self.footer.config(text='')
-        uname = self.soname.get()
+        uname = string.capwords(self.soname.get())
         if uname not in pool:
             self.footer.config(text="The name you entered was not signed into the lab")
             return
