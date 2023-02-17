@@ -333,11 +333,19 @@ class Admin_menu(ttk.Frame):
         self.monitor = ScrolledText(self, width=300)
         self.monitor.grid(column=1,row=1,rowspan=4)
 
-        self.uname = ttk.Entry(self, width = 55)
-        self.uname.grid(column=1, row=0)
-        self.uname.bind('<Return>', lambda event:self.search_date()) # change back to .search_log
-        ttk.Label(self, text='Search Name Entry').grid(column=1, row=0, sticky='w', padx=90)
-        self.monitor.insert('1.0', "test")
+        self.search_frame = Container_frame(self)
+
+        ttk.Label(self.search_frame, text='Search Name').pack(side=tk.LEFT, padx=5)
+        self.uname = ttk.Entry(self.search_frame, width = 22) # width was 55
+        self.uname.pack(side=tk.LEFT, padx=5)
+        self.uname.bind('<Return>', lambda event:self.search_log())
+
+        self.udate = ttk.Entry(self.search_frame, width = 12)
+        ttk.Label(self.search_frame, text='| OR |  Search Date').pack(side=tk.LEFT, padx=5)
+        self.udate.pack(side=tk.LEFT, padx=5)
+        ttk.Button(self.search_frame, text='Date Search', command=lambda: self.search_date()).pack()
+        self.udate.bind('<Return>', lambda event:self.search_date())
+        self.search_frame.grid(column=1, row=0)
 
     def print_mon(self,txt):
         #self.container.admin_menu.monitor.delete('1.0', tk.END)
@@ -366,7 +374,7 @@ class Admin_menu(ttk.Frame):
 
     def search_log(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        i=2
+        i=2 # might not be required anymore. check and clean
         alist = []
         uname = self.uname.get()
         for x in self.container.log:
@@ -380,11 +388,11 @@ class Admin_menu(ttk.Frame):
 
     def search_date(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        i=2
+        i=2 # might not be required anymore. check and clean
         alist = []
-        uname = self.uname.get()
+        uname = self.udate.get()
         for x in self.container.log:
-            if uname in x.signin.strftime("%Y-%m-%d"): # going to need to seperate this into various searches?
+            if uname in x.signin.strftime("%Y-%m-%d") and uname != "": # going to need to seperate this into various searches? Well, use of dashes makes it not need multi searches. add to documentation
                 alist.append(x)
         if len(alist) > 0:
             self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
@@ -403,6 +411,11 @@ class Admin_menu(ttk.Frame):
                 alist.append(x)
         self.print_mon(alist)
 
+"""container frame
+"""
+class Container_frame(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
 
 """App
 """
