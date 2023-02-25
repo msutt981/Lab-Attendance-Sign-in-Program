@@ -14,6 +14,7 @@ from json import JSONEncoder, JSONDecoder
 from pathlib import Path
 import ast
 import string
+import cv2
 
 # https://gist.github.com/majgis/4200488
 #Taken from http://taketwoprogramming.blogspot.com/2009/06/subclassing-jsonencoder-and-jsondecoder.html
@@ -182,6 +183,33 @@ def admin_check(pwd, msg_label, top, app):
     else:
         msg_label.config(text="Error: retry password")
 
+"""https://www.geeksforgeeks.org/webcam-qr-code-scanner-using-opencv/
+"""
+def scan_qr():
+    a = str()
+    
+    cap = cv2.VideoCapture(0)
+    # initialize the cv2 QRCode detector
+    detector = cv2.QRCodeDetector()
+
+    while True:
+        _, img = cap.read()
+        data, bbox, _ = detector.detectAndDecode(img)
+        # check if there is a QRCode in the image
+        if data:
+            a=data
+            break
+
+        cv2.imshow("QRCODEscanner, press q to close", img)
+        if cv2.waitKey(1) == ord("q"):
+            break
+
+    b=(str(a))
+    print(b)
+
+    cap.release()
+    cv2.destroyAllWindows()
+
 """Main Menu
 """
 class Main_menu(ttk.Frame):
@@ -196,7 +224,7 @@ class Main_menu(ttk.Frame):
 
     def __create_widgets(self):
         ttk.Label(self, text="").pack(ipady=60)
-        ttk.Button(self, text='Sign-in', style='big.TButton', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1, anchor=tk.CENTER)
+        ttk.Button(self, text='Sign-in', style='big.TButton', command=lambda: self.container.goto_scanner_in()).pack(pady=1, padx=1, anchor=tk.CENTER)
         ttk.Button(self, text='Sign-out', style='big.TButton', command=lambda: self.container.goto_signout()).pack(pady=1, padx=1, anchor=tk.CENTER)
         ttk.Button(self, text='Professor', command=lambda: popupwin(self.container)).pack(pady=3,padx=3,side=tk.BOTTOM, anchor=tk.E)
         ttk.Label(self, text="").pack()
@@ -417,6 +445,19 @@ class Container_frame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
+"""scanner frame
+"""
+class Scanner_frame(ttk.Frame):
+    def __init__(self, container):
+        super().__init__(container)
+
+        self.container = container
+        self.__create_widgets()
+
+    def __create_widgets(self):
+        ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(pady=3,side=tk.TOP, anchor=tk.W)
+        ttk.Button(self, text='Manual Sign-in', style='big.TButton', command=lambda: self.container.goto_signin()).pack(pady=1, padx=1, anchor=tk.CENTER)
+
 """App
 """
 class App(tk.Tk):
@@ -430,7 +471,7 @@ class App(tk.Tk):
         #self.style.configure('TLabel', background='#fbceb1')
         #self.style.configure('TFrame', background='#fbceb1')
 
-        self.u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
+        self.u0=Login("initialize log","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
         self.log=list((initialize_log('log.json',self.u0))) # initialize log list
         self.pool=set(pool_load("pool.json")) # initialise the set of signed in names
 
@@ -443,6 +484,7 @@ class App(tk.Tk):
         self.signin_menu = Signin_menu(self)
         self.signout_menu = Signout_menu(self)
         self.admin_menu = Admin_menu(self)
+        self.scanner_menu = Scanner_frame(self)
 
     def show_mainmenu(self):
         self.main_menu.pack(expand=True,fill=tk.BOTH)
@@ -468,8 +510,15 @@ class App(tk.Tk):
     def hide_adminmenu(self):
         self.admin_menu.pack_forget()
 
+    def show_scannermenu(self):
+        self.scanner_menu.pack(expand=True,fill=tk.BOTH)
+
+    def hide_scannermenu(self):
+        self.scanner_menu.pack_forget()
+
     def goto_signin(self):
         self.hide_mainmenu()
+        self.hide_scannermenu()
         self.show_signinmenu()
         self.signin_menu.footer.config(text = "")
         self.signin_menu.siname.focus()
@@ -478,11 +527,13 @@ class App(tk.Tk):
         self.hide_signinmenu()
         self.hide_signoutmenu()
         self.hide_adminmenu()
+        self.hide_scannermenu()
         self.clear_entry()
         self.show_mainmenu()
 
     def goto_signout(self):
         self.hide_mainmenu()
+        self.hide_scannermenu()
         self.show_signoutmenu()
         self.signout_menu.footer.config(text = "")
         self.signout_menu.soname.focus()
@@ -493,12 +544,22 @@ class App(tk.Tk):
         self.admin_menu.uname.config(text = "")
         self.admin_menu.uname.focus()
 
+    def goto_scanner_in(self):
+        self.hide_mainmenu()
+        self.show_scannermenu()
+        scan_qr()
+
+    def goto_scanner_out(self):
+        self.hide_mainmenu()
+        self.show_scannermenu()
+
     def clear_entry(self):
         self.signin_menu.siname.delete(0, tk.END)
         self.signin_menu.pidi.delete(0, tk.END)
         self.signout_menu.soname.delete(0, tk.END)
         self.signout_menu.pido.delete(0, tk.END)
         self.admin_menu.monitor.delete('1.0', tk.END)
+
 
 def main():
     u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
