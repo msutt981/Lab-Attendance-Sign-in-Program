@@ -94,13 +94,12 @@ class Login: # Builds logins as objects
 def header_string():
     return "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n"
 
-def find_previous(log,uname):
+def find_previous(log,uname): # find last instance of uname in the log and return that instance
     for i in reversed(log):
         if i.uname == uname:
             return i
-# find last instance of uname in the log and return that instance
 
-def initialize_log(filename,u0):
+def initialize_log(filename,u0): # initializes the log list with either previously saved data or a clean list
     path = Path(filename)
     log = []
     if path.is_file():        
@@ -111,7 +110,6 @@ def initialize_log(filename,u0):
     else:
         log=[u0]
     return log
-# ^ initializes the log list with either previously saved data or a clean list
 
 def save_object(obj,filename):
     try:
