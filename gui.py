@@ -91,6 +91,9 @@ class Login: # Builds logins as objects
         else:
             return self.uname
 
+def header_string():
+    return "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n"
+
 def find_previous(log,uname):
     for i in reversed(log):
         if i.uname == uname:
@@ -128,7 +131,7 @@ def log_save(obj, filename):
     now = datetime.now().replace(microsecond=0).strftime("%Y-%m-%d_%H.%M.%S.")
     try:
         with open(now+filename, "w+") as f:
-            f.write(f"       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
+            f.write(header_string())
             for x in obj:
                 f.write(f"{x}\n")
     except Exception as ex:
@@ -356,7 +359,7 @@ class Admin_menu(ttk.Frame):
 
     def print_log(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
+        self.monitor.insert('1.0', header_string())
         i = 2
         for x in self.container.log:
             self.monitor.insert(f'{i}.0', f'{x}\n')
@@ -381,7 +384,7 @@ class Admin_menu(ttk.Frame):
             if (uname.lower() in x.uname.lower()) and uname != "": # remove 'and' to : to have blank entry show full log
                 alist.append(x)
         if len(alist) > 0:
-            self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
+            self.monitor.insert('1.0', header_string())
             self.print_mon(alist)
         else:
             self.monitor.insert('1.0', "No results found.")
@@ -395,14 +398,14 @@ class Admin_menu(ttk.Frame):
             if uname in x.signin.strftime("%Y-%m-%d") and uname != "": # going to need to seperate this into various searches? Well, use of dashes makes it not need multi searches. add to documentation
                 alist.append(x)
         if len(alist) > 0:
-            self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
+            self.monitor.insert('1.0', header_string())
             self.print_mon(alist)
         else:
             self.monitor.insert('1.0', "No results found.")
 
     def show_final(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        self.monitor.insert('1.0', "       Sign-in      ||       Sign-out      || Total time in Lab || Name      || PIN\n")
+        self.monitor.insert('1.0', header_string())
         alist=[]
         uuname=set()
         for x in reversed(self.container.log):
@@ -430,7 +433,7 @@ class App(tk.Tk):
         #self.style.configure('TLabel', background='#fbceb1')
         #self.style.configure('TFrame', background='#fbceb1')
 
-        self.u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
+        self.u0=Login("log initialized","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
         self.log=list((initialize_log('log.json',self.u0))) # initialize log list
         self.pool=set(pool_load("pool.json")) # initialise the set of signed in names
 

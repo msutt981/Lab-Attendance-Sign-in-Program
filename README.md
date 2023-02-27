@@ -7,7 +7,7 @@ This is a digital replacement for a clipboard sign-in sheet that will auto calcu
 4. You can now run the .pyw file. The program will generate and save the log and pool files as needed.
 
 ## Options
-- The default professor password is 9987. To change it, edit the .pyw file and search for 9987 and change it to whatever you would like it to be. Just make sure it is still between the "s ie: `"the changed password"`
+- The default professor password is 9987. To change it, edit the .pyw file and search for 9987 and change it to whatever you would like it to be. Just make sure it is still between the `"`s ie: `"the changed password"`
 
 ## Sign-in/out usage
 - Sign-in/out names are case insensitive. They should be automatically initial capitalized as one would expect names to be.
@@ -20,7 +20,7 @@ This is a digital replacement for a clipboard sign-in sheet that will auto calcu
   - Recommended to use this at the end of the day or after students have left the lab to check if anyone forgot to sign-out. The professor will have to decide how to handle this event. The easiest way to resolve this is to delete the pool.json file (making sure that only studnts who forgot to log out are signed-in). This will allow them to sign-in the next time they enter the lab. This doesn'tadd time for when they forgot to log out and retains their sign-in on the log so it can be seen that they forgot to sign-out. This also doesn't add any time from the session where they forgot to sign-out.
 - **Show Log**: displays the full log
 - **Search log for name**: Searches the log for the name typed in the Search Name text box. One can also just press enter after typing a name in the box to search without pressing the button.
-- **Date Search**: One can also search by date using the Search Date text box. Searches should be input like the date is displayed. ie: `-01-` to search all January dates; `-02-18` to search for entries on February 18th; or `2023-01-30` to search for entries specifically on January 30th of 2023.
+- **Date Search**: One can also search by date using the Search Date text box. Like the name search, you can press enter after typing the box to search. Searches should be input like the date is displayed. ie: `-01-` to search all January dates; `-02-18` to search for entries on February 18th; or `2023-01-30` to search for entries specifically on January 30th of 2023.
 - **Show final entry for each user**: This will display the last entry for each unique sign-in name. This is useful for quickly seeing all the student's final amount of time spent in the lab.
 - **Save log to text file**: This saves the whole log to a textfile with the date and time .log.txt as its filename. This is for backup purposes and in case the log needs to be sent to another party.
 
