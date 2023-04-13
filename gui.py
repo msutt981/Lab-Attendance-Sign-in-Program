@@ -1,7 +1,7 @@
 """
 Matthew Sutter 1/27/2023
-This is a gui version of the digital sign-in sheet program written for
-CTS289
+This is the gui version of the digital sign-in sheet program written for
+CTS289. A project for the Nursing Lab.
 """
 
 import tkinter as tk
@@ -69,7 +69,7 @@ class DateTimeAwareJSONDecoder(JSONDecoder):
       return d
 
 
-class Login: # Builds logins as objects
+class Login: # Builds sign-in/outs as objects
     def __init__(self,uname,pid,signin,signout,ttotal):
         self.uname=uname
         self.signin=signin
@@ -80,7 +80,7 @@ class Login: # Builds logins as objects
     def __str__(self):
         return f"{self.signin} || {self.signout} ||   {self.ttotal}  || {self.uname_col()} || {self.pid}"
 
-    def uname_col(self):
+    def uname_col(self): # adds whitespace to maintin minimum column size for name
         ulen = len(self.uname)
         if ulen < 17:
             whitespace = 16 - ulen
@@ -113,7 +113,7 @@ def initialize_log(filename,u0): # initializes the log list with either previous
 
 def save_object(obj,filename):
     try:
-        with open(filename, "w") as f: #check what all the letter modifiers do
+        with open(filename, "w") as f:
             json.dump([ob.__dict__ for ob in obj], f, cls=DateTimeAwareJSONEncoder, indent=4)
     except Exception as ex:
         print("Error: ", ex)
@@ -153,7 +153,7 @@ def pool_load(filename):
 
 """
 """
-def close_win(top): # ended up not using. remove when cleaning up if still not needed
+def close_win(top):
     top.destroy()
 
 """https://www.tutorialspoint.com/creating-a-popup-message-box-with-an-entry-field-in-tkinter
@@ -176,7 +176,7 @@ def popupwin(app):
     msg_label.pack()
 
 def admin_check(pwd, msg_label, top, app):
-    if pwd == "9987": #change to what client wants
+    if pwd == "9987": #change to what professor wants
         close_win(top)
         app.goto_adminmenu()
         app.clear_entry()
@@ -189,8 +189,8 @@ class Main_menu(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
-        self.__create_widgets()
         self.container = container
+        self.__create_widgets()
         self.style = ttk.Style(self)
         #self.style.configure('TFrame', background='#fbceb1')
         self.style.configure('big.TButton', font=(None, 20))
@@ -221,7 +221,7 @@ class Signin_menu(ttk.Frame):
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(padx=2,pady=1,side=tk.TOP, anchor=tk.W)
         self.header = ttk.Label(self, text="Sign-in", font=('None', 15))
-        self.header.place(anchor='n', relx=0.5) # fix this so when it changes it looks better
+        self.header.place(anchor='n', relx=0.5)
         ttk.Label(self, text='Name').pack(side=tk.TOP)
         self.siname = ttk.Entry(self, font=("None",20))
         self.siname.pack()
@@ -268,8 +268,8 @@ class Signout_menu(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
-        self.__create_widgets()
         self.container = container
+        self.__create_widgets()
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).pack(pady=3,side=tk.TOP, anchor=tk.W)
@@ -320,8 +320,8 @@ class Admin_menu(ttk.Frame):
         self.columnconfigure(0, weight=1, minsize=150)
         self.columnconfigure(1, weight=4, minsize=300)
 
-        self.__create_widgets()
         self.container = container
+        self.__create_widgets()
 
     def __create_widgets(self):
         ttk.Button(self, text='<- Back', command=lambda: self.container.goto_mainmenu()).grid(sticky='nesw',column=0, row=0)
@@ -337,7 +337,7 @@ class Admin_menu(ttk.Frame):
         self.search_frame = Container_frame(self)
 
         ttk.Label(self.search_frame, text='Search Name').pack(side=tk.LEFT, padx=5)
-        self.uname = ttk.Entry(self.search_frame, width = 22) # width was 55
+        self.uname = ttk.Entry(self.search_frame, width = 22)
         self.uname.pack(side=tk.LEFT, padx=5)
         self.uname.bind('<Return>', lambda event:self.search_log())
 
@@ -349,7 +349,6 @@ class Admin_menu(ttk.Frame):
         self.search_frame.grid(column=1, row=0)
 
     def print_mon(self,txt):
-        #self.container.admin_menu.monitor.delete('1.0', tk.END)
         i=2
         for x in txt:
             self.monitor.insert(f'{i}.0', f'{x}\n')
@@ -375,7 +374,6 @@ class Admin_menu(ttk.Frame):
 
     def search_log(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        i=2 # might not be required anymore. check and clean
         alist = []
         uname = self.uname.get()
         for x in self.container.log:
@@ -389,7 +387,6 @@ class Admin_menu(ttk.Frame):
 
     def search_date(self):
         self.container.admin_menu.monitor.delete('1.0', tk.END)
-        i=2 # might not be required anymore. check and clean
         alist = []
         uname = self.udate.get()
         for x in self.container.log:
@@ -502,13 +499,7 @@ class App(tk.Tk):
         self.admin_menu.monitor.delete('1.0', tk.END)
 
 def main():
-    u0=Login("Shade","0303",datetime.now().replace(microsecond=0),datetime.now().replace(microsecond=0)+timedelta(hours=3),timedelta(hours=3))
-    #log=list((initialize_log('log.json',u0))) # initialize log list
-    #pool=set(pool_load("pool.json")) # initialise the set of signed in names
     app = App()
-    
-    # keep the window displaying
-    #root.mainloop()
     app.mainloop()
 
 if __name__ == "__main__":
